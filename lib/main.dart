@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fss_interview/src/view/dashboard/dashboard_view.dart';
+import 'package:fss_interview/src/view/login/login_view.dart';
 
 void main() {
   runApp(const MyApp());
@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
         ),
         debugShowCheckedModeBanner: false,
-        home: const DashboardView()
+        home: const LoginView()
     );
   }
 }

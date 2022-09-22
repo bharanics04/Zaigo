@@ -16,15 +16,17 @@ class LoginBloc{
     _mView=view;
   }
 
-  validateLogin(String phone,String password){
+  validateLogin(String phone,String password) async{
     if(Utils.isEmpty(phone)){
       _mView.showToast("Username is empty");
     }else if(Utils.isEmpty(password)){
       _mView.showToast("Password is empty");
     }else if(Utils.isNotEmpty(password) && password.length!=8){
       _mView.showToast("Password must contain 8 characters");
-    }else{
+    }else if(await Utils.onCheckConnectivity()){
       login(phone, password);
+    }else{
+      _mView.showToast("Please connect to internet");
     }
   }
 
@@ -47,6 +49,16 @@ class LoginBloc{
 
   saveUserDetails(GetLoginDetailsModel model) async{
     await _mLocalDataProvider.saveUserDetails(model.mAccessToken, model.mName);
+  }
+
+  checkLoggedDetails() async{
+   bool isUserLogged=(await LocalDataProvider().getAccessToken())!=null;
+   if(isUserLogged){
+     _mView.navigateToDashboard();
+   }else{
+     _mView.setLoggedDetails(isUserLogged);
+     _mView.showProgress(isLoading: false);
+   }
   }
 
 }

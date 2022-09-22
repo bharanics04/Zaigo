@@ -21,6 +21,7 @@ class LoginViewState extends State<LoginView> implements BaseView{
   TextEditingController tecPassword=TextEditingController();
   late LoginBloc _mBloc;
   bool mLoading=false;
+  bool? mUserLogged;
 
   @override
   void dispose() {
@@ -35,17 +36,24 @@ class LoginViewState extends State<LoginView> implements BaseView{
     super.initState();
   }
 
-  init(){
+  init() async{
     _mBloc=LoginBloc();
     _mBloc.setView(this);
+    await _mBloc.checkLoggedDetails();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.white,
-        body: CustomLoader(child: loginView(),loader: mLoading)
+        body: mUserLogged!=null?CustomLoader(child: loginView(),loader: mLoading):loadingView()
     );
+  }
+
+  loadingView(){
+    return Column(mainAxisAlignment: MainAxisAlignment.center,children: const [
+      Center(child: CircularProgressIndicator())
+    ],);
   }
 
   loginView(){
@@ -111,6 +119,10 @@ class LoginViewState extends State<LoginView> implements BaseView{
 
   void navigateToDashboard() {
     CustomNavigationUtils.pushReplacement(context, const DashboardView());
+  }
+
+  void setLoggedDetails(bool isUserLogged) {
+    mUserLogged=isUserLogged;
   }
 
 }
